@@ -1,6 +1,7 @@
 import os
-from src.services import read_transactions_excel
+from src.services import read_transactions_excel, search_transactions
 from src.reports import spending_by_category, spending_by_weekday, spending_by_workday
+from src.views import get_main_page_data
 
 if __name__ == "__main__":
     file_path = os.path.join("data", "operations.xlsx")
@@ -15,3 +16,11 @@ if __name__ == "__main__":
         
         print("\n=== Средние траты в рабочий/выходной день ===")
         print(spending_by_workday(df, "2021-12-31"))
+
+        print("\n=== Тест поиска (запрос: 'Колхоз') ===")
+        # Просто выведем первые 200 символов, чтобы не засорять консоль
+        search_result = search_transactions(df, "Колхоз")
+        print(search_result[:200] + "...")
+        
+        print("\n=== Данные для главной страницы (JSON) ===")
+        print(get_main_page_data(df))
