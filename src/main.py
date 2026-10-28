@@ -18,9 +18,9 @@ if __name__ == "__main__":
         print(spending_by_workday(df, "2021-12-31"))
 
         print("\n=== Тест поиска (запрос: 'Колхоз') ===")
-        # Просто выведем первые 200 символов, чтобы не засорять консоль
         search_result = search_transactions(df, "Колхоз")
         print(search_result[:200] + "...")
         
         print("\n=== Данные для главной страницы (JSON) ===")
-        print(get_main_page_data(df))
+        # Вот эта строчка теперь стоит ровно!
+        print(get_main_page_data(df, date="2021-12-31"))

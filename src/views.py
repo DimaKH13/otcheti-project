@@ -1,5 +1,6 @@
 import json
 import logging
+import datetime
 from typing import Optional
 import pandas as pd
 from src.utils import get_greeting
@@ -11,9 +12,25 @@ def get_main_page_data(transactions: pd.DataFrame, date: Optional[str] = None) -
     """Формирует JSON-данные для главной страницы."""
     logger.info("Формирование данных для главной страницы")
     
-    greeting = get_greeting()
-    cards = get_card_info(transactions)
-    top_trans = get_top_transactions(transactions, 5)
+    # Обработка даты
+    if date:
+        current_date = pd.to_datetime(date)
+    else:
+        current_date = pd.Timestamp(datetime.datetime.now())
+        
+    # Передаем дату в приветствие
+    greeting = get_greeting(current_date.to_pydatetime())
+    
+    # Фильтруем транзакции с начала месяца до указанной даты
+    start_of_month = current_date.replace(day=1, hour=0, minute=0, second=0)
+    filtered_df = transactions[
+        (transactions['Дата операции'] >= start_of_month) & 
+        (transactions['Дата операции'] <= current_date)
+    ].copy()
+    
+    # Передаем ОТФИЛЬТРОВАННЫЕ данные в функции
+    cards = get_card_info(filtered_df)
+    top_trans = get_top_transactions(filtered_df, 5)
     
     try:
         with open('user_settings.json', 'r', encoding='utf-8') as f:
